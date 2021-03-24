@@ -3,29 +3,32 @@ import time
 import webbrowser
 import json
 
-# TODO: remove class implementation and turn into single "script" file
-# TODO: add functionality to join class 5 minutes before
+
+def main():
+    time_ = time.localtime()
+    day = str(time_.tm_wday)
+    minute = time_.tm_min
+    hour = time_.tm_hour
+    schedule_path = os.path.dirname(__file__)
+
+    # can join 15 minutes before class starts
+    if minute >= 45 and hour % 2 == 1:
+        hour += 1
+    hour = str(hour)
+
+    # load the schedule for the day
+    with open(os.path.join(schedule_path, 'schedule.json')) as f:
+        schedule = json.load(f)[day]
+
+    # find which class is due for the current hour
+    for class_ in schedule:
+        if hour in class_.split('-'):
+            class_url = schedule[class_]
+            break
+
+    # open the zoom url
+    webbrowser.open(class_url)
 
 
-class ZoomLauncher:
-    def __init__(self):
-        self.time = time.localtime()
-        self.today = str(self.time.tm_wday)
-        self.hour = str(self.time.tm_hour)
-        self.dir = os.path.dirname(__file__)
-
-    def load_schedule(self):
-        with open(os.path.join(self.dir, "schedule.json")) as f:
-            schedule = json.load(f)
-        return schedule[self.today]
-
-    def get_class_url(self):
-        schedule = self.load_schedule()
-        for class_ in schedule:
-            if self.hour in class_.split('-'):
-                return schedule[class_]
-
-    def join_class(self):
-        url = self.get_class_url()
-        if url:
-            webbrowser.open(url)
+if __name__ == '__main__':
+    main()
