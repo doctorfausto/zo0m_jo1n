@@ -2,6 +2,7 @@ import os
 import time
 import webbrowser
 import json
+import pyautogui
 
 
 def main():
@@ -26,8 +27,11 @@ def main():
             class_url = schedule[class_]
             break
 
-    # open the zoom url
+    # open the zoom url, wait 5 seconds and close the tab
     webbrowser.open(class_url)
+    time.sleep(5)
+    pyautogui.hotkey('alt', 'tab')
+    pyautogui.hotkey('ctrl', 'w')
 
 
 if __name__ == '__main__':
